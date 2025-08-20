@@ -7,18 +7,29 @@ const app = express();
 
 const mongoose = require('mongoose');
 
+const Product = require("./models/product.model")
+
+const path = require('path')
+
 app.use(express.json());
 app.use(cors());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 const productRouter = require("./routes/products.routes");
 const httpStatusText = require("./utils/httpStatusText");
 
-app.use("/api", productRouter)
+app.use("/api/products", productRouter)
+
+// app.patch('/ss', async (req, res) => {
+//     await Product.updateMany({}, {$unset: {inStock: true}})
+//     res.status(200).json("Done")
+// })
 
 const url = process.env.MONGO_URL;
 
 mongoose.connect(url).then(() => {
     console.log("mongoose server started");
+
 })
 // global middleware for not found router
 app.all(/.*/, (req, res) => {
@@ -34,3 +45,4 @@ let port = process.env.PORT || 4000;
 app.listen(port, () => {
     console.log("listining on port " + port);
 })
+
