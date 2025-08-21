@@ -9,14 +9,33 @@ const getAllProducts = async (req, res) => {
 
   let products;
   const query = req.query;
+  const category = req.query.category;
+  const subCategory = req.query.subcategory;
+  const querry = {};
+  if (category) {
+    querry.category = category;
+    if(subCategory)
+      querry.subcategory = subCategory;
+  }
+
   if(query)
   {
     const limit = query.limit || 10;
     const page = query.page || 1;
-    products = await Product.find({}, {"__v": false}).limit(limit).skip((page - 1) * limit);
+    products = await Product.find(querry, {"__v": false}).limit(limit).skip((page - 1) * limit);
   }
   
-  products = await Product.find({}, {"__v": false});
+  products = await Product.find(querry, {"__v": false});
+
+  // //print all categories
+  // const map = new Map();
+  // products.forEach(product => {
+  //   if(!map.has(product.category))
+  //     map.set(product.category, new Set());
+  //   map.get(product.category).add(product.subcategory);
+  // })
+  // console.log("categories: ", map);
+
   res.status(200).json({status: httpStatusText.SUCCESS, data: products})
 }
 
@@ -52,12 +71,11 @@ const deleteProduct = asyncWrapper(async (req, res, next) => {
 })
 
 
-
-
 module.exports = {
   getAllProducts,
   getSingleProduct,
   addProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  
 }
