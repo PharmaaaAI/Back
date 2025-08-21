@@ -46,7 +46,7 @@ const getSingleProduct = asyncWrapper(async (req, res, next) => {
     const error = appError.create('product not found', 404, httpStatusText.FAIL);
     return next(error);
   }
-  res.json({status: httpStatusText.SUCCESS,data: {product}});
+  res.status(200).json({status: httpStatusText.SUCCESS,data: {product}});
 })
 
 const addProduct = asyncWrapper(async (req, res, next) => {
