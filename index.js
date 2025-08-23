@@ -18,11 +18,13 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 const productRouter = require("./routes/products.routes");
 const ordersRouter = require('./routes/orders.routes')
 const signupLoginRouter = require("./routes/signupLogin.routes");
+const categoriesRouter = require('./routes/categories.route')
 const httpStatusText = require("./utils/httpStatusText");
 app.use(express.json());
 app.use("/api", signupLoginRouter)
 app.use("/api/products", productRouter)
 app.use("/api/orders", ordersRouter)
+app.use('/api/categories', categoriesRouter);
 
 // app.patch('/ss', async (req, res) => {
 //     await Product.updateMany({}, {$unset: {inStock: true}})
@@ -38,7 +40,7 @@ mongoose.connect(url).then(() => {
 })
 // global middleware for not found router
 app.all(/.*/, (req, res) => {
-  res.status(404).json({ message: "URL Not Found" });
+    res.status(404).json({ message: "URL Not Found" });
 });
 
 

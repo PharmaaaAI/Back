@@ -3,7 +3,8 @@ const {validationResult} = require("express-validator")
 const Product = require("../models/product.model")
 const httpStatusText = require("../utils/httpStatusText");
 const appError = require('../utils/appError')
-const asyncWrapper = require('../middleware/asyncWrapper')
+const asyncWrapper = require('../middleware/asyncWrapper');
+const { log } = require("console");
 
 const getAllProducts = async (req, res) => {
 
@@ -18,23 +19,20 @@ const getAllProducts = async (req, res) => {
       querry.subcategory = subCategory;
   }
 
-  if(query)
+  if(query.limit && query.page)
   {
-    const limit = query.limit || 10;
-    const page = query.page || 1;
+    console.log("Implement pagination")
+    
+    const limit = query.limit;
+    const page = query.page;
+
+    console.log("limit: ", limit);
+    console.log("page: ", page);
+
     products = await Product.find(querry, {"__v": false}).limit(limit).skip((page - 1) * limit);
   }
-  
-  products = await Product.find(querry, {"__v": false});
-
-  // //print all categories
-  // const map = new Map();
-  // products.forEach(product => {
-  //   if(!map.has(product.category))
-  //     map.set(product.category, new Set());
-  //   map.get(product.category).add(product.subcategory);
-  // })
-  // console.log("categories: ", map);
+  else
+    products = await Product.find(querry, {"__v": false});
 
   res.status(200).json({status: httpStatusText.SUCCESS, data: products})
 }
