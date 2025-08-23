@@ -17,7 +17,7 @@ const getSingleOrder = asyncWrapper(async(req, res, next) => {
     return next(error);
   }
 
-  res.status(200).json({status: httpStatusText.SUCCESS, data: order});
+  res.status(200).json({status: httpStatusText.SUCCESS, data: {order}});
 })
 
 const addOrder = asyncWrapper(async (req, res, next) => {

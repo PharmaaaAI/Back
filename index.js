@@ -17,9 +17,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 const productRouter = require("./routes/products.routes");
 const ordersRouter = require('./routes/orders.routes')
-const ordersRouter = require('./routes/orders.routes')
-const httpStatusText = require("./utils/httpStatusText");
 const signupLoginRouter = require("./routes/signupLogin.routes");
+const httpStatusText = require("./utils/httpStatusText");
 app.use(express.json());
 app.use("/api", signupLoginRouter)
 app.use("/api/products", productRouter)
@@ -30,11 +29,6 @@ app.use("/api/orders", ordersRouter)
 //     res.status(200).json("Done")
 // })
 app.use("/api/orders", ordersRouter)
-
-// app.patch('/ss', async (req, res) => {
-//     await Product.updateMany({}, {$unset: {inStock: true}})
-//     res.status(200).json("Done")
-// })
 
 const url = process.env.MONGO_URI;
 

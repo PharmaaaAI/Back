@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const userRoles = require('../utils/userRoles')
 
 const userSchema = new mongoose.Schema({
   // basics
@@ -33,8 +34,8 @@ const userSchema = new mongoose.Schema({
   // when signing in (admin email and pass will be auto created in the database)
   role: {
     type: String,
-    enum: ['customer', 'admin'],
-    default: 'customer'
+    enum: [userRoles.CUSTOMER, userRoles.ADMIN],
+    default: userRoles.CUSTOMER
   },
 
   //(only for customers)
