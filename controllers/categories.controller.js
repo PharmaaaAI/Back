@@ -23,7 +23,7 @@ const addMainCategory = asyncWrapper(async (req, res, next) => {
   const newCategory = new Category({name: categoryName, subcategories: []});
   await newCategory.save();
 
-  res.status(200).json({status: httpStatusText.SUCCESS, data: {newCategory}});
+  res.status(200).json({status: httpStatusText.SUCCESS, data: newCategory});
 })
 
 const getSubCategories = asyncWrapper(async (req, res, next) => {
