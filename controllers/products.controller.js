@@ -10,8 +10,8 @@ const getAllProducts = async (req, res) => {
 
   let products;
   const query = req.query;
-  const category = req.query.category;
-  const subCategory = req.query.subcategory;
+  const category = query.category;
+  const subCategory = query.subcategory;
   const querry = {};
   if (category) {
     querry.category = category;
@@ -21,13 +21,8 @@ const getAllProducts = async (req, res) => {
 
   if(query.limit && query.page)
   {
-    console.log("Implement pagination")
-    
     const limit = query.limit;
     const page = query.page;
-
-    console.log("limit: ", limit);
-    console.log("page: ", page);
 
     products = await Product.find(querry, {"__v": false}).limit(limit).skip((page - 1) * limit);
   }
@@ -63,9 +58,13 @@ const updateProduct = asyncWrapper(async (req, res) => {
 })
 
 const deleteProduct = asyncWrapper(async (req, res, next) => {
-  await Product.deleteOne({_id: req.params.productID})
-  res.status(200).json({status: httpStatusText.SUCCESS,data: null});
 
+  const deleted = await Product.deleteOne({_id: req.params.productID})
+  if(deleted.deletedCount === 0){
+    const error = appError.create("product with this id not found", 404, httpStatusText.FAIL);
+    return next(error);
+  }
+  res.status(200).json({status: httpStatusText.SUCCESS,data: null});
 })
 
 

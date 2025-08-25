@@ -8,7 +8,26 @@ const Product = require("../models/product.model")
 
 
 const getAllOrders = async (req, res) => {
-  const orders = await Order.find();
+
+  let orders;
+  const query = req.query;
+  const userId = query.userId;
+  const querry = {};
+  if (userId) {
+    querry.userID = userId;
+  }
+
+  if(query.limit && query.page)
+  {
+    
+    const limit = query.limit;
+    const page = query.page;
+
+    orders = await Order.find(querry, {"__v": false}).limit(limit).skip((page - 1) * limit);
+  }
+  else
+    orders = await Order.find(querry, {"__v": false});
+
   res.status(200).json({status: httpStatusText.SUCCESS, data: orders});
 }
 
@@ -27,18 +46,20 @@ const getSingleOrder = asyncWrapper(async(req, res, next) => {
 const addOrder = asyncWrapper(async (req, res, next) => {
 
   let amount = 0;
-  try {
-    for (const product of req.body.products) {
-      const prod = await Product.findById(product.productID);
+  
+  for (const product of req.body.products) {
+      try {
+        const prod = await Product.findById(product.productID);
       if (!prod) {
-        return next(appError.create("Product not found", 404, httpStatusText.FAIL));
+        return next(appError.create(`Product with ID: ${product.productID} not found`, 404, httpStatusText.FAIL));
       }
       amount += prod.price * product.quantity;
+    }catch{
+      const error = appError.create(`Product with ID: ${product.productID} is not valid`, 404, httpStatusText.FAIL);
+      return next(error);
     }
-  }catch{
-    const error = appError.create("the product Id is not valid", 404, httpStatusText.FAIL);
-    return next(error);
   }
+
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
@@ -58,14 +79,15 @@ const addOrder = asyncWrapper(async (req, res, next) => {
   return res.status(201).json({status: httpStatusText.SUCCESS,data: null});
 })
 
-const confirmPayment = (req, res) => {
+const confirmPayment = (req, res, next) => {
   const sig = req.headers["stripe-signature"];
   let event;
 
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+    const error = appError.create(`Webhook Error: ${err.message}`, 400, httpStatusText.ERROR)
+    return next(error);
   }
 
   if (event.type === "payment_intent.succeeded") {
@@ -84,9 +106,12 @@ const updateOrder = asyncWrapper(async (req, res, next) => {
 
 const deleteOrder = asyncWrapper(async (req, res, next) => {
   const orderId = req.params.orderId;
-  await Order.deleteOne({_id: orderId});
+  const deleted = await Order.deleteOne({_id: orderId});
+  if(deleted.deletedCount === 0){
+    const error = appError.create("order with this id not found", 404, httpStatusText.FAIL);
+    return next(error);
+  }
   res.status(200).json({status: httpStatusText.SUCCESS, data: null});
-  
 })
 
 module.exports = {
