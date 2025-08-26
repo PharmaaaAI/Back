@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
     lowercase: true,
-    trim: true
+    trim: true,
+    immutable: true
   },
   password: {
     type: String,
@@ -30,11 +31,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  cart: [Object],
 
   // when signing in (admin email and pass will be auto created in the database)
   role: {
     type: String,
-    enum: [userRoles.CUSTOMER, userRoles.ADMIN],
+    enum: [userRoles.CUSTOMER, userRoles.ADMIN, userRoles.DELIVERY],
     default: userRoles.CUSTOMER
   },
 

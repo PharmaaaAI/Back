@@ -28,6 +28,14 @@ const getAllProducts = async (req, res) => {
     ]);
   }
 
+  if (query.minPrice) {
+    querry.price = { ...querry.price, $gt: +query.minPrice };
+  }
+
+  if (query.maxPrice) {
+    querry.price = { ...querry.price, $lt: +query.maxPrice };
+  }
+
   if(query.limit && query.page)
   {
     const limit = query.limit;
@@ -62,8 +70,8 @@ const addProduct = asyncWrapper(async (req, res, next) => {
 
 const updateProduct = asyncWrapper(async (req, res) => {
 
-  const apdatedProduct = await Product.updateOne({_id: req.params.productID}, {$set: {...req.body}});
-  res.json({status: httpStatusText.SUCCESS,data: {apdatedProduct}});
+  const apdatedProduct = await Product.updateOne({_id: req.params.productID}, {$set: {...req.body}}, { runValidators: true });
+  res.json({status: httpStatusText.SUCCESS,data: apdatedProduct});
 })
 
 const deleteProduct = asyncWrapper(async (req, res, next) => {

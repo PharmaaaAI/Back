@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const orderStatus = require("../utils/orderStatus");
 
 const orderSchema = new mongoose.Schema({
 
@@ -12,12 +13,18 @@ const orderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    default: 'pending'
+    enum: [orderStatus.Confirmed, orderStatus.Dispatched, orderStatus.Delivered],
+    default:  orderStatus.Confirmed
   },
   createdAt: {
     type: Date,
     default: Date.now
   },
+  paymentMethod: {
+    type: String,
+    required: true,
+    enum: ['Visa', "Cash"]
+  }
 })
 
 module.exports = mongoose.model('Order', orderSchema);
