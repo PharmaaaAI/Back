@@ -61,7 +61,8 @@ const getSingleProduct = asyncWrapper(async (req, res, next) => {
 
 const addProduct = asyncWrapper(async (req, res, next) => {
 
-  req.body.images = req.files.map(obj => obj.filename)
+  req.body.images = req.files.map(file => file.path);
+
   const newProduct = new Product(req.body);
   await newProduct.save();
 
