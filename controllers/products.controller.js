@@ -4,7 +4,6 @@ const Product = require("../models/product.model")
 const httpStatusText = require("../utils/httpStatusText");
 const appError = require('../utils/appError')
 const asyncWrapper = require('../middleware/asyncWrapper');
-const { log } = require("console");
 
 const getAllProducts = async (req, res) => {
 
@@ -12,11 +11,21 @@ const getAllProducts = async (req, res) => {
   const query = req.query;
   const category = query.category;
   const subCategory = query.subcategory;
+  let description
+  if(query.description)
+    description = query.description.split(' ');
   const querry = {};
   if (category) {
     querry.category = category;
     if(subCategory)
       querry.subcategory = subCategory;
+  }
+
+  if (description && description.length > 0) {
+    querry.$or = description.flatMap(word => [
+      { description: { $regex: word, $options: "i" } },
+      { name: { $regex: word, $options: "i" } }
+    ]);
   }
 
   if(query.limit && query.page)
