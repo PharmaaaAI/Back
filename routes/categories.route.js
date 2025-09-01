@@ -6,11 +6,11 @@ const allowedTo = require("../middleware/allowedTo");
 const userRoles = require('../utils/userRoles');
 
 router.route('/')
-  .get(verifyToken, categoryController.getAllCategories)
+  .get(categoryController.getAllCategories)
   .post(verifyToken, allowedTo(userRoles.ADMIN), categoryController.addMainCategory)
 
 router.route('/:categoryName')
-  .get(verifyToken, categoryController.getSubCategories)
+  .get(categoryController.getSubCategories)
   .patch(verifyToken, allowedTo(userRoles.ADMIN), categoryController.addSubCategory)
   .delete(verifyToken, allowedTo(userRoles.ADMIN), categoryController.deleteMainCategory)
 
