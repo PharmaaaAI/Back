@@ -36,15 +36,24 @@ const getAllProducts = async (req, res) => {
     querry.price = { ...querry.price, $lt: +query.maxPrice };
   }
 
-  if(query.limit && query.page)
-  {
-    const limit = query.limit;
-    const page = query.page;
-
-    products = await Product.find(querry, {"__v": false}).limit(limit).skip((page - 1) * limit);
+  if (query.exclude) {
+    querry._id = { $ne: query.exclude };
   }
-  else
-    products = await Product.find(querry, {"__v": false});
+
+  if (query.sample) {
+    const sampleSize = parseInt(query.sample, 10) || 5;
+    products = await Product.aggregate([
+      { $match: querry },
+      { $sample: { size: sampleSize } },
+    ]);
+  } else {
+    if (query.limit && query.page) {
+      const limit = query.limit;
+      const page = query.page;
+
+      products = await Product.find(querry, { __v: false }).limit(limit).skip((page - 1) * limit);
+    } else products = await Product.find(querry, { __v: false });
+  }
 
   res.status(200).json({status: httpStatusText.SUCCESS, data: products})
 }
