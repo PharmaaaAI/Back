@@ -1,5 +1,6 @@
 
 const {validationResult} = require("express-validator")
+const mongoose = require("mongoose")
 const Product = require("../models/product.model")
 const httpStatusText = require("../utils/httpStatusText");
 const appError = require('../utils/appError')
@@ -37,7 +38,7 @@ const getAllProducts = async (req, res) => {
   }
 
   if (query.exclude) {
-    querry._id = { $ne: query.exclude };
+    querry._id = { $ne: new mongoose.Types.ObjectId(`${query.exclude}`) };
   }
 
   if (query.sample) {
