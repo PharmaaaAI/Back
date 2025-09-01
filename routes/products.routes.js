@@ -32,7 +32,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage, fileFilter });
 
 router.route('/')
-  .get(verifyToken, productController.getAllProducts)
+  .get(productController.getAllProducts)
   .post(
     verifyToken,
     allowedTo(userRoles.ADMIN),
@@ -41,7 +41,7 @@ router.route('/')
   );
 
 router.route('/:productID')
-  .get(verifyToken, productController.getSingleProduct)
+  .get(productController.getSingleProduct)
   .patch(verifyToken, allowedTo(userRoles.ADMIN), productController.updateProduct)
   .delete(verifyToken, allowedTo(userRoles.ADMIN), productController.deleteProduct);
 

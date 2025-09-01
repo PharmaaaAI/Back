@@ -26,10 +26,6 @@ app.use("/api/products", productRouter)
 app.use("/api/orders", ordersRouter)
 app.use('/api/categories', categoriesRouter);
 
-// app.patch('/ss', async (req, res) => {
-//     await Product.updateMany({}, {$unset: {inStock: true}})
-//     res.status(200).json("Done")
-// })
 app.use("/api/orders", ordersRouter)
 
 const url = process.env.MONGO_URI;
