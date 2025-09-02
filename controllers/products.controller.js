@@ -52,8 +52,8 @@ const getAllProducts = async (req, res) => {
       const limit = query.limit;
       const page = query.page;
 
-      products = await Product.find(querry, { __v: false }).limit(limit).skip((page - 1) * limit);
-    } else products = await Product.find(querry, { __v: false });
+      products = await Product.find(querry, { __v: false }).sort({ quantity: -1 }).limit(limit).skip((page - 1) * limit);
+    } else products = await Product.find(querry, { __v: false }).sort({ quantity: -1 });
   }
 
   res.status(200).json({status: httpStatusText.SUCCESS, data: products})
