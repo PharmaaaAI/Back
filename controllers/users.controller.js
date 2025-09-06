@@ -6,6 +6,7 @@ const httpStatusText = require('../utils/httpStatusText')
 const bcrypt = require('bcrypt')
 const appError = require('../utils/appError');
 const userRoles = require('../utils/userRoles');
+const asyncWrapper = require('../middleware/asyncWrapper');
 
 const signup = async (req, res) => {
   try {
@@ -83,10 +84,22 @@ const updateInfo = async (req, res, next) => {
   res.json({status: httpStatusText.SUCCESS,data: apdatedUser});
 }
 
+const getUserCart = asyncWrapper(async (req, res, next) => {
+  const user = await User.findById(req.params.userID);
+
+  if(!user)
+    return next(appError.create("User not found", 404, httpStatusText.FAIL))
+  if(user._id.toString() !== req.currentUser.userId && req.currentUser.role !== userRoles.ADMIN)
+    return next(appError.create("This user not authorized", 404, httpStatusText.FAIL))
+
+  res.status(200).json({status: httpStatusText.SUCCESS, data: user.cart})
+})
+
 module.exports = {
   signup,
   signin,
   getAllUsers,
   getUserInfo,
-  updateInfo
+  updateInfo,
+  getUserCart
 };

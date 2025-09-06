@@ -11,5 +11,7 @@ router.get('/', verifyToken, allowedTo(userRoles.ADMIN), userController.getAllUs
 router.route('/:userID')
   .get(verifyToken, userController.getUserInfo)
   .patch(verifyToken, userController.updateInfo)
+router.route('/:userID/cart')
+  .get(verifyToken, userController.getUserCart)
 
 module.exports = router;
