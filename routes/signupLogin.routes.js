@@ -13,5 +13,6 @@ router.route('/:userID')
   .patch(verifyToken, userController.updateInfo)
 router.route('/:userID/cart')
   .get(verifyToken, userController.getUserCart)
+  .patch(verifyToken, userController.updateCart)
 
 module.exports = router;
