@@ -50,24 +50,22 @@ const getSingleOrder = asyncWrapper(async(req, res, next) => {
 
 const addOrder = asyncWrapper(async (req, res, next) => {
 
-  let amount = 0;
-  
   for (const product of req.body.products) {
       try {
         const prod = await Product.findById(product.productID);
       if (!prod) {
         return next(appError.create(`Product with ID: ${product.productID} not found`, 404, httpStatusText.FAIL));
       }
-      amount += prod.price * product.quantity;
     }catch{
       const error = appError.create(`Product with ID: ${product.productID} is not valid`, 404, httpStatusText.FAIL);
       return next(error);
     }
   }
 
+  const {paymentMethod, amount} = req.body;
 
   let data = null
-  if(req.body.paymentMethod === "Visa"){
+  if(paymentMethod === "Visa"){
     try {
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amount * 100,

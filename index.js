@@ -20,7 +20,6 @@ const ordersRouter = require('./routes/orders.routes')
 const signupLoginRouter = require("./routes/signupLogin.routes");
 const categoriesRouter = require('./routes/categories.route')
 const httpStatusText = require("./utils/httpStatusText");
-app.use(express.json());
 app.use("/api/users", signupLoginRouter)
 app.use("/api/products", productRouter)
 app.use("/api/orders", ordersRouter)

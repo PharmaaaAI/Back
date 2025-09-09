@@ -106,6 +106,8 @@ const updateCart = async (req, res, next) => {
   
   if(type === "addProduct")
   {
+    let {quantity} = req.body;
+    quantity = quantity || 1;
     const product = await Product.findById(productID);
     if(!product)
       return next(appError.create("Enter valid productID", 400, httpStatusText.FAIL))
@@ -114,7 +116,7 @@ const updateCart = async (req, res, next) => {
     if(prod)
       return next(appError.create("Product already in cart", 400, httpStatusText.FAIL))
 
-    user.cart.push({productID, quantity: 1})
+    user.cart.push({productID, quantity})
     user.save();
   }
   else if(type === "removeProduct"){

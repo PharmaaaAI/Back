@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const orderStatus = require("../utils/orderStatus");
+const { type } = require('os');
 
 const orderSchema = new mongoose.Schema({
 
@@ -24,6 +25,10 @@ const orderSchema = new mongoose.Schema({
     type: String,
     required: true,
     enum: ['Visa', "Cash"]
+  },
+  amount: {
+    type: Number,
+    required: true
   }
 })
 
