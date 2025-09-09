@@ -1,5 +1,6 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+import userRoles from '../utils/userRoles.js';
 
 const userSchema = new mongoose.Schema({
   // basics
@@ -29,7 +30,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
-
+  cart: [Object],
+  recommendations: [Object],
   // when signing in (admin email and pass will be auto created in the database)
   role: {
     type: String,
@@ -103,4 +105,4 @@ userSchema.pre('save', async function(next) {
   }
 });
 
-module.exports = mongoose.model('User', userSchema);
+export default mongoose.model('User', userSchema);

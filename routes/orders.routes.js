@@ -1,17 +1,21 @@
-const express = require('express');
+import { Router } from 'express';
+import { getAllOrders, addOrder, getSingleOrder, updateOrder, deleteOrder } from '../controllers/orders.controller.js';
+const router = Router();
+import Stripe from 'stripe';
+import verifyToken from "../middleware/verifyToken.js";
+import allowedTo from "../middleware/allowedTo.js";
+import userRoles from '../utils/userRoles.js';
 
-const orderController = require('../controllers/orders.controller')
-
-const router = express.Router();
-
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 router.route('/')
-  .get(orderController.getAllOrders)
-  .post(orderController.addOrder)
+  .get(verifyToken, getAllOrders)
+  .post(verifyToken, addOrder)
 
 router.route('/:orderId')
-  .get(orderController.getSingleOrder)
-  .patch(orderController.updateOrder)
-  .delete(orderController.deleteOrder)
+  .get(verifyToken, getSingleOrder)
+  .patch(verifyToken, updateOrder)
+  .delete(verifyToken, deleteOrder)
 
-module.exports = router
+
+export default router

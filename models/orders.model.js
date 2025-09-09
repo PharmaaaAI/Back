@@ -1,6 +1,8 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
+import orderStatus from "../utils/orderStatus.js";
 
-const orderSchema = new mongoose.Schema({
+
+const orderSchema = new Schema({
 
   userID: {
     type: String,
@@ -20,4 +22,4 @@ const orderSchema = new mongoose.Schema({
   },
 })
 
-module.exports = mongoose.model('Order', orderSchema);
+export default model('Order', orderSchema);
