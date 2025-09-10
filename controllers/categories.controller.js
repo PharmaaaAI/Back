@@ -5,7 +5,7 @@ const httpStatusText = require('../utils/httpStatusText')
 
 
 const getAllCategories = asyncWrapper(async (req, res) => {
-  const categories = await Category.find({}, {__v: false});
+  const categories = await Category.find({}, {__v: false, _id: false});
   res.status(200).json({status: httpStatusText.SUCCESS, data: categories});
 })
 
