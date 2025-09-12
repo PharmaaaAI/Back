@@ -15,17 +15,19 @@ app.use(express.json());
 app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
-const productRouter = require("./routes/products.routes");
-const ordersRouter = require('./routes/orders.routes')
-const signupLoginRouter = require("./routes/signupLogin.routes");
-const categoriesRouter = require('./routes/categories.route')
-const httpStatusText = require("./utils/httpStatusText");
-app.use("/api/users", signupLoginRouter)
-app.use("/api/products", productRouter)
-app.use("/api/orders", ordersRouter)
-app.use('/api/categories', categoriesRouter);
+const productRouter = require("./routes/products.routes.js");
+const ordersRouter = require('./routes/orders.routes.js')
+const signupLoginRouter = require("./routes/signupLogin.routes.js");
+const categoriesRouter = require('./routes/categories.route.js')
+const httpStatusText = require("./utils/httpStatusText.js");
+const RecommendationService = require("./routes/chat.routes.js");
 
-app.use("/api/orders", ordersRouter)
+app.use("/api/users", signupLoginRouter)
+// app.use("/api/products", productRouter)
+// app.use("/api/orders", ordersRouter)
+app.use('/api/categories', categoriesRouter);
+app.use("/api/recom", RecommendationService);
+// app.use("/api/orders", ordersRouter)
 
 const url = process.env.MONGO_URI;
 
