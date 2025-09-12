@@ -50,16 +50,21 @@ const getSingleOrder = asyncWrapper(async(req, res, next) => {
 
 const addOrder = asyncWrapper(async (req, res, next) => {
 
+  let products = [];
   for (const product of req.body.products) {
       try {
         const prod = await Product.findById(product.productID);
-      if (!prod) {
-        return next(appError.create(`Product with ID: ${product.productID} not found`, 404, httpStatusText.FAIL));
+        products.push(prod);
+        if (!prod) {
+          return next(appError.create(`Product with ID: ${product.productID} not found`, 404, httpStatusText.FAIL));
+        }
+        if(product.quantity > prod.quantity)
+          return next(appError.create(`the available items of the Product with ID: ${product.productID} is ${prod.quantity}`, 404, httpStatusText.FAIL));
+
+      }catch{
+        const error = appError.create(`Product with ID: ${product.productID} is not valid`, 404, httpStatusText.FAIL);
+        return next(error);
       }
-    }catch{
-      const error = appError.create(`Product with ID: ${product.productID} is not valid`, 404, httpStatusText.FAIL);
-      return next(error);
-    }
   }
 
   const {paymentMethod, amount} = req.body;
@@ -77,6 +82,12 @@ const addOrder = asyncWrapper(async (req, res, next) => {
     } catch (err) {
       return res.status(500).json({ error: err.message });
     }
+  }
+
+  for(let i = 0; i < products.length; i++)
+  {
+    products[i].quantity -= req.body.products[i].quantity;
+    await products[i].save();
   }
 
   const newOrder = new Order({...req.body, userID: req.currentUser.userId});
