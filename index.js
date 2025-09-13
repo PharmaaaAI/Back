@@ -23,11 +23,11 @@ const httpStatusText = require("./utils/httpStatusText.js");
 const RecommendationService = require("./routes/chat.routes.js");
 
 app.use("/api/users", signupLoginRouter)
-// app.use("/api/products", productRouter)
-// app.use("/api/orders", ordersRouter)
+app.use("/api/products", productRouter)
+app.use("/api/orders", ordersRouter)
 app.use('/api/categories', categoriesRouter);
 app.use("/api/recom", RecommendationService);
-// app.use("/api/orders", ordersRouter)
+app.use("/api/orders", ordersRouter)
 
 const url = process.env.MONGO_URI;
 
