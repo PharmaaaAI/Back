@@ -171,8 +171,8 @@ const callback = asyncWrapper(async (req, res) => {
     await user.save();
   }
   const token = await generateJWT({email: user.email, userId: user._id, role: user.role});
-  // res.redirect(`https://pharma-ai-front.vercel.app?token=${token}`);
-  res.redirect(`http://localhost:5173?token=${token}`);
+  res.redirect(`https://pharma-ai-front.vercel.app?token=${token}`);
+  // res.redirect(`http://localhost:5173?token=${token}`);
 })
 
 module.exports = {
