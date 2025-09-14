@@ -4,7 +4,7 @@ module.exports = new GoogleStrategy(
   {
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "/api/users/google/callback",
+    callbackURL: "https://back-phi-jet.vercel.app/api/users/google/callback",
   },
   (accessToken, refreshToken, profile, done) => {
     // Here, you find or create the user in your DB
