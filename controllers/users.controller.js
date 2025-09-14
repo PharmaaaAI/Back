@@ -116,7 +116,7 @@ const updateCart = async (req, res, next) => {
       return next(appError.create("Product already in cart", 400, httpStatusText.FAIL))
 
     user.cart.push({productID, quantity})
-    user.save();
+    await user.save();
   }
   else if(type === "removeProduct"){
 
@@ -162,6 +162,19 @@ const getUserCart = asyncWrapper(async (req, res, next) => {
   res.status(200).json({status: httpStatusText.SUCCESS, data: user.cart})
 })
 
+const callback = asyncWrapper(async (req, res) => {
+  const email = req.user.emails[0].value;
+  const name = req.user.name;
+  let user = await User.findOne({ email });
+  if (!user){
+    user = new User({ email, firstName: name.givenName, lastName: name.familyName})
+    await user.save();
+  }
+  const token = await generateJWT({email: user.email, userId: user._id, role: user.role});
+  // res.redirect(`https://pharma-ai-front.vercel.app?token=${token}`);
+  res.redirect(`http://localhost:5173?token=${token}`);
+})
+
 module.exports = {
   signup,
   signin,
@@ -169,5 +182,6 @@ module.exports = {
   getUserInfo,
   updateInfo,
   getUserCart,
-  updateCart
+  updateCart,
+  callback
 };
